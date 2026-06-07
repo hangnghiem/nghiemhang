@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nghiem Thi Hang — NLP & Generative AI Linguist</title>
+  <meta name="description" content="Nghiem Thi Hang — Linguist with 7 years in Natural Language Processing (NLP) and Generative AI: data review, annotation, localization, and model evaluation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --bg-soft: #161a22;
+      --card: #1b202b;
+      --line: #2a313f;
+      --text: #e7ecf3;
+      --muted: #9aa6b8;
+      --accent: #7cc4ff;
+      --accent-2: #b69bff;
+      --accent-grad: linear-gradient(120deg, #7cc4ff 0%, #b69bff 100%);
+      --shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.6);
+      --radius: 18px;
+      --maxw: 1040px;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f5f7fb;
+        --bg-soft: #ffffff;
+        --card: #ffffff;
+        --line: #e6eaf1;
+        --text: #1a2230;
+        --muted: #5a677d;
+        --accent: #2f7ed8;
+        --accent-2: #7a52e0;
+        --shadow: 0 18px 50px -24px rgba(40, 60, 100, 0.28);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+    a { color: inherit; }
+
+    /* ---------- Header / Nav ---------- */
+    header.site {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .brand {
+      font-family: "Fraunces", serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 0.2px;
+    }
+    .nav-links { display: flex; gap: 26px; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    @media (max-width: 640px) { .nav-links { display: none; } }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 90px 0 70px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -40% -20% auto auto;
+      width: 60%;
+      height: 120%;
+      background: radial-gradient(closest-side, rgba(124, 196, 255, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto auto -40% -20%;
+      width: 55%;
+      height: 110%;
+      background: radial-gradient(closest-side, rgba(182, 155, 255, 0.16), transparent 70%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (max-width: 820px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+    .eyebrow .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+    h1 {
+      font-family: "Fraunces", serif;
+      font-weight: 600;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      line-height: 1.05;
+      margin: 0 0 18px;
+      letter-spacing: -0.5px;
+    }
+    h1 .grad {
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lead {
+      font-size: 1.08rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 0 28px;
+    }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 14px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent-grad);
+      color: #0b0d12;
+      box-shadow: 0 10px 30px -10px rgba(124, 196, 255, 0.6);
+    }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-ghost {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: var(--bg-soft);
+    }
+    .btn-ghost:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    /* avatar / card */
+    .id-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .avatar {
+      width: 96px; height: 96px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      font-family: "Fraunces", serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #0b0d12;
+      background: var(--accent-grad);
+      margin-bottom: 18px;
+    }
+    .id-name { font-weight: 700; font-size: 1.2rem; margin: 0; }
+    .id-role { color: var(--muted); font-size: 0.92rem; margin: 4px 0 18px; }
+    .id-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+    .id-list li { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
+    .id-list .ic {
+      flex: none;
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      display: grid; place-items: center;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      color: var(--accent);
+    }
+    .id-list a { color: var(--text); text-decoration: none; }
+    .id-list a:hover { color: var(--accent); }
+
+    /* ---------- Sections ---------- */
+    section { padding: 72px 0; }
+    .section-head { margin-bottom: 40px; }
+    .section-head .kicker {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+    .section-head h2 {
+      font-family: "Fraunces", serif;
+      font-weight: 600;
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      margin: 8px 0 0;
+      letter-spacing: -0.3px;
+    }
+
+    /* stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: -10px;
+    }
+    @media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    .stat {
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat .num {
+      font-family: "Fraunces", serif;
+      font-size: 2rem;
+      font-weight: 600;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .stat .label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+    /* skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 720px) { .skills-grid { grid-template-columns: 1fr; } }
+    .skill-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .skill-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
+    .skill-card h3 {
+      margin: 0 0 14px;
+      font-size: 1.05rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .skill-card h3 .emoji { font-size: 1.2rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-size: 0.82rem;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    /* languages */
+    .langs { display: grid; gap: 18px; max-width: 520px; }
+    .lang-row { display: grid; grid-template-columns: 130px 1fr 110px; align-items: center; gap: 14px; }
+    @media (max-width: 520px) { .lang-row { grid-template-columns: 90px 1fr; } .lang-row .level-text { display: none; } }
+    .lang-name { font-weight: 600; }
+    .bar { height: 8px; border-radius: 999px; background: var(--bg-soft); border: 1px solid var(--line); overflow: hidden; }
+    .bar span { display: block; height: 100%; border-radius: 999px; background: var(--accent-grad); }
+    .level-text { font-size: 0.82rem; color: var(--muted); text-align: right; }
+
+    /* timeline */
+    .timeline { position: relative; margin-left: 8px; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px; top: 6px; bottom: 6px;
+      width: 2px;
+      background: linear-gradient(var(--accent), var(--accent-2));
+      opacity: 0.4;
+    }
+    .tl-item { position: relative; padding: 0 0 36px 40px; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-item::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 6px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 3px solid var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    .tl-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px; }
+    .tl-role { font-weight: 700; font-size: 1.08rem; }
+    .tl-date {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .tl-org { color: var(--muted); font-size: 0.92rem; margin: 2px 0 4px; }
+    .tl-proj {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent-2) 30%, transparent);
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    .tl-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 0.93rem; display: grid; gap: 6px; }
+    .tl-list li::marker { color: var(--accent); }
+
+    /* education */
+    .edu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    @media (max-width: 640px) { .edu-grid { grid-template-columns: 1fr; } }
+    .edu-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .edu-deg { font-weight: 700; font-size: 1.05rem; margin: 0 0 4px; }
+    .edu-school { color: var(--muted); font-size: 0.92rem; }
+    .edu-date { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-top: 10px; }
+
+    /* contact / footer */
+    .contact-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 44px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-card::before {
+      content: "";
+      position: absolute;
+      inset: -60% 20% auto;
+      height: 120%;
+      background: radial-gradient(closest-side, rgba(124,196,255,0.16), transparent 70%);
+    }
+    .contact-card h2 {
+      font-family: "Fraunces", serif;
+      font-weight: 600;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      margin: 0 0 10px;
+      position: relative;
+    }
+    .contact-card p { color: var(--muted); margin: 0 0 26px; position: relative; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; position: relative; }
+
+    footer.site {
+      border-top: 1px solid var(--line);
+      padding: 28px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="wrap nav">
+      <span class="brand">Nghiem Thi Hang</span>
+      <nav class="nav-links">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#experience">Experience</a>
+        <a href="#education">Education</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="about">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> NLP &amp; Generative AI Linguist</span>
+        <h1>Nghiem Thi Hang<br /><span class="grad">Language meets AI.</span></h1>
+        <p class="lead">
+          With 7 years in Natural Language Processing and Generative AI, I specialize in
+          linguistic data review, annotation, localization, and model evaluation — refining
+          model outputs for accuracy and naturalness, and turning language into data-driven insights.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#contact">Get in touch</a>
+          <a class="btn btn-ghost" href="#experience">View experience</a>
+        </div>
+      </div>
+
+      <aside class="id-card reveal">
+        <div class="avatar">NH</div>
+        <p class="id-name">Nghiem Thi Hang</p>
+        <p class="id-role">Vietnamese Language Expert</p>
+        <ul class="id-list">
+          <li>
+            <span class="ic">✉</span>
+            <a href="mailto:nghiemthihang89@gmail.com">nghiemthihang89@gmail.com</a>
+          </li>
+          <li>
+            <span class="ic">☎</span>
+            <a href="tel:+817085191501">070-8519-1501</a>
+          </li>
+          <li>
+            <span class="ic">📍</span>
+            <span>Urawa-ku, Saitama, Japan</span>
+          </li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section style="padding-top: 0;">
+    <div class="wrap">
+      <div class="stats reveal">
+        <div class="stat"><div class="num">7+</div><div class="label">Years in NLP &amp; GenAI</div></div>
+        <div class="stat"><div class="num">4</div><div class="label">Industry roles</div></div>
+        <div class="stat"><div class="num">3</div><div class="label">Languages</div></div>
+        <div class="stat"><div class="num">2</div><div class="label">Degrees in English</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">What I do</span>
+        <h2>Core skills</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card reveal">
+          <h3><span class="emoji">🧠</span> Linguistic</h3>
+          <div class="tags">
+            <span class="tag">Semantic Analysis</span>
+            <span class="tag">Pragmatic Analysis</span>
+            <span class="tag">Review &amp; Validation</span>
+            <span class="tag">Cultural Relevance</span>
+          </div>
+        </div>
+        <div class="skill-card reveal">
+          <h3><span class="emoji">✍️</span> Writing</h3>
+          <div class="tags">
+            <span class="tag">Rewriting</span>
+            <span class="tag">Prompt Designing</span>
+            <span class="tag">Creative Writing</span>
+          </div>
+        </div>
+        <div class="skill-card reveal">
+          <h3><span class="emoji">🔍</span> Analytical &amp; Logical</h3>
+          <div class="tags">
+            <span class="tag">Error Analysis</span>
+            <span class="tag">Factuality Check</span>
+            <span class="tag">Scope Identification</span>
+            <span class="tag">Auditing</span>
+          </div>
+        </div>
+        <div class="skill-card reveal">
+          <h3><span class="emoji">🛠️</span> Technical</h3>
+          <div class="tags">
+            <span class="tag">Google Workspace</span>
+            <span class="tag">Model Evaluation</span>
+            <span class="tag">SxS Evaluation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head reveal" style="margin-top: 56px;">
+        <span class="kicker">Languages</span>
+        <h2>Spoken &amp; written</h2>
+      </div>
+      <div class="langs reveal">
+        <div class="lang-row">
+          <span class="lang-name">Vietnamese</span>
+          <div class="bar"><span style="width:100%"></span></div>
+          <span class="level-text">Native</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">English</span>
+          <div class="bar"><span style="width:85%"></span></div>
+          <span class="level-text">Business</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">Japanese</span>
+          <div class="bar"><span style="width:55%"></span></div>
+          <span class="level-text">Intermediate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" style="background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Career</span>
+        <h2>Experience</h2>
+      </div>
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <div class="tl-top">
+            <span class="tl-role">Vietnamese Language Expert — supporting Google</span>
+            <span class="tl-date">Jan 2025 – Present</span>
+          </div>
+          <div class="tl-org">Cognizant, Japan</div>
+          <span class="tl-proj">Generative AI</span>
+          <ul class="tl-list">
+            <li>Review and validate high-quality “golden data” sets used for supervised AI model training.</li>
+            <li>Evaluate model responses and rewrite them for accuracy and fluency.</li>
+            <li>Execute Side-by-Side (SxS) evaluation across models, versions, and human writers.</li>
+            <li>Conduct testing of new features and provide insights on model performance.</li>
+          </ul>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-top">
+            <span class="tl-role">Linguistic Project Manager</span>
+            <span class="tl-date">Jan 2024 – Dec 2024</span>
+          </div>
+          <div class="tl-org">Aceolution, Japan</div>
+          <span class="tl-proj">Generative AI · NLP</span>
+          <ul class="tl-list">
+            <li>Review and evaluate natural language data.</li>
+            <li>Localize prompts and review AI model responses.</li>
+            <li>Maintain and improve the quality of NLP systems.</li>
+            <li>Evaluate, update, and contribute to guideline development.</li>
+            <li>Manage team work and monitor team performance.</li>
+          </ul>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-top">
+            <span class="tl-role">Vietnamese Associate Linguist — supporting Google</span>
+            <span class="tl-date">Dec 2018 – Dec 2023</span>
+          </div>
+          <div class="tl-org">Adecco Group, Japan</div>
+          <span class="tl-proj">NLP</span>
+          <ul class="tl-list">
+            <li>Review and annotate linguistic data, and develop grammar.</li>
+            <li>Identify and address gaps in annotation.</li>
+            <li>Contribute to Speech and Text-to-Speech improvement, text normalization of named entities, and localization.</li>
+          </ul>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-top">
+            <span class="tl-role">English Teacher</span>
+            <span class="tl-date">Aug 2012 – Jun 2014</span>
+          </div>
+          <div class="tl-org">Phuong Dong University, Vietnam</div>
+          <ul class="tl-list">
+            <li>Plan, design, and organize comprehensive instructional materials and lesson plans.</li>
+            <li>Evaluate student progress and learning outcomes.</li>
+            <li>Conduct research on student learning to improve the quality of teaching and learning.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Background</span>
+        <h2>Education</h2>
+      </div>
+      <div class="edu-grid">
+        <div class="edu-card reveal">
+          <p class="edu-deg">MA — English</p>
+          <p class="edu-school">Vietnam National University, Hanoi, Vietnam</p>
+          <p class="edu-date">Sep 2012 – Jun 2014</p>
+        </div>
+        <div class="edu-card reveal">
+          <p class="edu-deg">BA — English</p>
+          <p class="edu-school">Vietnam National University, Hanoi, Vietnam</p>
+          <p class="edu-date">Sep 2007 – Jun 2011</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-card reveal">
+        <h2>Let's work together</h2>
+        <p>Open to opportunities in linguistic data, AI model evaluation, and localization.</p>
+        <div class="contact-row">
+          <a class="btn btn-primary" href="mailto:nghiemthihang89@gmail.com">✉ Email me</a>
+          <a class="btn btn-ghost" href="tel:+817085191501">☎ 070-8519-1501</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="wrap">© <span id="year"></span> Nghiem Thi Hang · NLP &amp; Generative AI Linguist · Saitama, Japan</div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
