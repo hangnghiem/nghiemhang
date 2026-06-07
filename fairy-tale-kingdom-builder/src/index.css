@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito", system-ui, sans-serif;
+  color: #3b2a52;
+  /* Custom fairy wand cursor */
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><text y='26' font-size='26'>%E2%9C%A8</text></svg>")
+      4 4,
+    auto;
+}
+
+button,
+a,
+[role="button"] {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'><text y='28' font-size='28'>%F0%9F%91%91</text></svg>")
+      6 6,
+    pointer;
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/55 backdrop-blur-xl border border-white/70 shadow-xl;
+  }
+  .fairy-btn {
+    @apply font-display font-bold rounded-2xl px-5 py-3 text-fairy-ink
+      bg-gradient-to-b from-white to-fairy-blush border-2 border-white/80
+      shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-glow
+      active:translate-y-0 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .fairy-btn-primary {
+    @apply text-white bg-gradient-to-b from-fairy-rose to-fairy-lilac border-white/60;
+  }
+  .card {
+    @apply rounded-3xl glass p-5;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-bold;
+  }
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(201, 182, 255, 0.6);
+  border-radius: 999px;
+}
+
+/* 3D storybook page flip helpers */
+.book-scene {
+  perspective: 2200px;
+}
+.book-page {
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-origin: left center;
+  backface-visibility: hidden;
+}
+.book-page.flipped {
+  transform: rotateY(-160deg);
+}
+
+/* Sparkle background */
+.bg-fairy {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #ffe3f1 0%, transparent 60%),
+    radial-gradient(1000px 700px at 110% 10%, #e7dcff 0%, transparent 55%),
+    radial-gradient(900px 700px at 50% 120%, #d6f2ff 0%, transparent 55%),
+    linear-gradient(160deg, #fff5fb 0%, #f3ecff 45%, #eaf6ff 100%);
+}
+.bg-raid {
+  background:
+    radial-gradient(1000px 600px at 50% -10%, #4b2a73 0%, transparent 60%),
+    radial-gradient(900px 700px at 110% 30%, #2a1747 0%, transparent 55%),
+    linear-gradient(160deg, #1b1030 0%, #2a1747 60%, #120a22 100%);
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-20vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh) rotate(720deg);
+    opacity: 0.9;
+  }
+}
+@keyframes rune-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.3);
+    opacity: 0;
+  }
+}
