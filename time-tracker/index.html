@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TimeTrack — Daily Activity Tracker</title>
+<meta name="description" content="Track time spent on daily activities like work, learning, exercise, and leisure, with custom categories, subcategories, and a dashboard." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0e1016;
+    --bg-soft: #161922;
+    --card: #1c2030;
+    --card-2: #232838;
+    --border: #2b3145;
+    --text: #e7eaf2;
+    --muted: #9aa3b8;
+    --accent: #6c8cff;
+    --accent-2: #8b6cff;
+    --good: #3ad29f;
+    --warn: #ffb454;
+    --danger: #ff6b6b;
+    --radius: 16px;
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: radial-gradient(1200px 600px at 80% -10%, rgba(108,140,255,.12), transparent 60%),
+                radial-gradient(1000px 500px at -10% 10%, rgba(139,108,255,.10), transparent 55%),
+                var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  header.app {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: grid; place-items: center; font-size: 22px; box-shadow: var(--shadow);
+  }
+  .brand h1 { font-size: 20px; margin: 0; letter-spacing: -.02em; }
+  .brand p { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); }
+
+  .tabs { display: flex; gap: 6px; background: var(--bg-soft); padding: 6px; border-radius: 14px; border: 1px solid var(--border); }
+  .tab {
+    border: 0; background: transparent; color: var(--muted); cursor: pointer;
+    padding: 9px 18px; border-radius: 10px; font-weight: 600; font-size: 14px; font-family: inherit;
+    transition: .18s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: var(--shadow); }
+
+  .grid { display: grid; gap: 18px; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 880px) { .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: linear-gradient(180deg, var(--card), var(--card-2));
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow);
+  }
+  .card-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 16px; }
+  .card-head h2 { margin: 0; }
+  .card h2 { margin: 0 0 16px; font-size: 16px; letter-spacing: -.01em; }
+  .card h2 .sub { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 6px; }
+
+  label { display: block; font-size: 12.5px; color: var(--muted); margin: 0 0 7px; font-weight: 600; }
+  input, select, textarea {
+    width: 100%; background: var(--bg-soft); border: 1px solid var(--border);
+    color: var(--text); border-radius: 11px; padding: 11px 13px; font-size: 14px; font-family: inherit;
+    outline: none; transition: .15s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,140,255,.18); }
+  .field { margin-bottom: 14px; }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; }
+
+  .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 560px){ .cat-grid { grid-template-columns: repeat(3, 1fr); } }
+  .cat {
+    border: 1px solid var(--border); background: var(--bg-soft); border-radius: 12px;
+    padding: 12px 8px; cursor: pointer; text-align: center; transition: .15s; user-select: none;
+  }
+  .cat:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .cat.selected { border-color: transparent; box-shadow: 0 0 0 2px var(--c, var(--accent)) inset; background: color-mix(in srgb, var(--c, var(--accent)) 16%, var(--bg-soft)); }
+  .cat .emoji { font-size: 22px; }
+  .cat .name { font-size: 12.5px; margin-top: 4px; font-weight: 600; }
+  .cat.add { display:grid; place-items:center; color: var(--muted); border-style: dashed; }
+  .cat.add .emoji { font-size: 20px; }
+
+  /* Subcategory chips */
+  .subrow { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; align-items:center; }
+  .subrow .lbl { font-size:12.5px; color:var(--muted); font-weight:600; margin-right:2px; }
+  .chip {
+    border:1px solid var(--border); background:var(--bg-soft); color:var(--text);
+    border-radius:999px; padding:7px 13px; font-size:13px; cursor:pointer; transition:.15s; font-family:inherit;
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip.selected { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color:transparent; color:#fff; font-weight:600; }
+  .chip.add { border-style:dashed; color:var(--muted); }
+  .chip-input { display:inline-flex; gap:6px; align-items:center; }
+  .chip-input input { width:140px; padding:7px 11px; border-radius:999px; }
+
+  .btn {
+    border: 0; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 14px;
+    padding: 12px 18px; border-radius: 12px; color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); transition: .15s;
+  }
+  .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.full { width: 100%; }
+  .btn.ghost { background: var(--bg-soft); border: 1px solid var(--border); color: var(--text); }
+  .btn.sm { padding: 8px 12px; font-size: 13px; }
+  .btn.link { background:transparent; border:0; color:var(--accent); padding:6px 8px; font-weight:600; font-size:13px; }
+  .btn.link:hover { transform:none; text-decoration:underline; }
+
+  /* Timer */
+  .timer-display { font-size: 44px; font-weight: 800; letter-spacing: -.02em; text-align: center; font-variant-numeric: tabular-nums; margin: 6px 0 16px; }
+  .timer-cat { text-align:center; color: var(--muted); font-size: 13px; margin-bottom: 14px; min-height: 18px; }
+  .timer-btns { display:flex; gap: 10px; }
+
+  /* Stat cards */
+  .stat .k { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  .stat .v { font-size: 28px; font-weight: 800; letter-spacing: -.02em; margin-top: 4px; }
+  .stat .d { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 10px 8px; font-size: 13.5px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  td .pill { display: inline-flex; align-items: center; gap: 6px; }
+  .subtag { color: var(--muted); font-size:12px; margin-left:4px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex:none; }
+  .del { color: var(--danger); background: transparent; border: 0; cursor: pointer; font-size: 16px; padding: 4px 8px; border-radius: 8px; }
+  .del:hover { background: rgba(255,107,107,.12); }
+  .empty { color: var(--muted); text-align: center; padding: 28px 10px; font-size: 14px; }
+
+  .range-tabs { display:flex; gap:6px; flex-wrap: wrap; }
+  .range-tabs .tab { padding: 7px 14px; font-size: 13px; background: var(--bg-soft); border: 1px solid var(--border); }
+  .range-tabs .tab.active { border-color: transparent; }
+
+  .seg { display:inline-flex; background:var(--bg-soft); border:1px solid var(--border); border-radius:10px; padding:3px; gap:3px; }
+  .seg button { border:0; background:transparent; color:var(--muted); font-family:inherit; font-weight:600; font-size:12.5px; padding:6px 12px; border-radius:8px; cursor:pointer; }
+  .seg button.active { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; }
+
+  .legend { display:flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 12px; }
+  .legend .item { display:flex; align-items:center; gap:7px; font-size: 13px; color: var(--muted); }
+  .chart-box { position: relative; height: 260px; }
+  .hidden { display: none !important; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .toolbar { display:flex; gap: 8px; flex-wrap: wrap; align-items:center; }
+  .spacer { flex: 1; }
+
+  /* Modal */
+  .backdrop { position: fixed; inset:0; background: rgba(6,8,14,.66); backdrop-filter: blur(3px); display:grid; place-items:center; z-index:50; padding:20px; }
+  .modal { width: 100%; max-width: 620px; max-height: 86vh; overflow-y: auto; }
+  .modal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom: 6px; }
+  .modal-head h2 { margin:0; font-size:18px; }
+  .cat-edit { border:1px solid var(--border); border-radius:14px; padding:14px; margin:14px 0; background: var(--bg-soft); }
+  .cat-edit-head { display:flex; gap:8px; align-items:center; }
+  .cat-edit-head .emoji-in { width:52px; text-align:center; font-size:18px; }
+  .cat-edit-head .name-in { flex:1; }
+  .cat-edit-head .color-in { width:46px; height:42px; padding:4px; cursor:pointer; }
+  .subs-edit { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center; }
+  .subs-edit .lbl { width:100%; font-size:12px; color:var(--muted); font-weight:600; }
+  .sub-chip { display:inline-flex; align-items:center; gap:6px; background:var(--card-2); border:1px solid var(--border); border-radius:999px; padding:6px 6px 6px 12px; font-size:13px; }
+  .sub-chip button { border:0; background:transparent; color:var(--muted); cursor:pointer; font-size:14px; padding:0 4px; border-radius:50%; }
+  .sub-chip button:hover { color: var(--danger); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div class="brand">
+      <div class="logo">⏱️</div>
+      <div>
+        <h1>TimeTrack</h1>
+        <p>Track time on daily activities & visualize your habits</p>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-view="track">Track</button>
+      <button class="tab" data-view="dashboard">Dashboard</button>
+    </nav>
+  </header>
+
+  <!-- ============ TRACK VIEW ============ -->
+  <section id="view-track" class="grid cols-2">
+    <div class="card">
+      <div class="card-head">
+        <h2>Log an activity</h2>
+        <button id="manageBtn" class="btn link">⚙ Manage categories</button>
+      </div>
+      <div id="catGrid" class="cat-grid"></div>
+      <div id="subRow" class="subrow"></div>
+
+      <div class="row">
+        <div class="field">
+          <label>Hours</label>
+          <input id="inHours" type="number" min="0" step="1" placeholder="0" />
+        </div>
+        <div class="field">
+          <label>Minutes</label>
+          <input id="inMins" type="number" min="0" max="59" step="1" placeholder="0" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Date</label>
+        <input id="inDate" type="date" />
+      </div>
+
+      <div class="field">
+        <label>Note (optional)</label>
+        <input id="inNote" type="text" maxlength="120" placeholder="e.g. Finished the quarterly report" />
+      </div>
+
+      <button id="addBtn" class="btn full">Add entry</button>
+      <p class="hint">Pick a category (and an optional subcategory), enter the time, then add it.</p>
+    </div>
+
+    <div class="grid" style="align-content:start;">
+      <div class="card">
+        <h2>Live timer</h2>
+        <div class="timer-display" id="timerDisplay">00:00:00</div>
+        <div class="timer-cat" id="timerCat">No category selected</div>
+        <div class="timer-btns">
+          <button id="timerStart" class="btn full">Start</button>
+          <button id="timerStop" class="btn ghost full hidden">Stop & save</button>
+        </div>
+        <p class="hint">The timer uses the currently selected category/subcategory. Stop to save the elapsed time.</p>
+      </div>
+
+      <div class="card">
+        <h2>Recent entries</h2>
+        <div id="recentWrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DASHBOARD VIEW ============ -->
+  <section id="view-dashboard" class="hidden">
+    <div class="card" style="margin-bottom:18px;">
+      <div class="toolbar">
+        <div class="range-tabs" id="rangeTabs">
+          <button class="tab active" data-range="today">Today</button>
+          <button class="tab" data-range="week">Last 7 days</button>
+          <button class="tab" data-range="month">Last 30 days</button>
+          <button class="tab" data-range="all">All time</button>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn ghost sm" id="exportBtn">Export JSON</button>
+        <button class="btn ghost sm" id="importBtn">Import</button>
+        <input id="importFile" type="file" accept="application/json" class="hidden" />
+      </div>
+    </div>
+
+    <div class="grid cols-4" style="margin-bottom:18px;">
+      <div class="card stat"><div class="k">Total tracked</div><div class="v" id="sTotal">0h</div><div class="d" id="sTotalD">in range</div></div>
+      <div class="card stat"><div class="k">Daily average</div><div class="v" id="sAvg">0h</div><div class="d">per active day</div></div>
+      <div class="card stat"><div class="k">Top activity</div><div class="v" id="sTop">—</div><div class="d" id="sTopD"></div></div>
+      <div class="card stat"><div class="k">Entries</div><div class="v" id="sCount">0</div><div class="d">logged</div></div>
+    </div>
+
+    <div class="grid cols-2" style="margin-bottom:18px;">
+      <div class="card">
+        <div class="card-head">
+          <h2>Time by activity</h2>
+          <div class="seg" id="groupSeg">
+            <button class="active" data-group="cat">Category</button>
+            <button data-group="sub">Subcategory</button>
+          </div>
+        </div>
+        <div class="chart-box"><canvas id="doughnut"></canvas></div>
+        <div class="legend" id="doughnutLegend"></div>
+      </div>
+      <div class="card">
+        <h2>Daily breakdown <span class="sub">hours per day</span></h2>
+        <div class="chart-box"><canvas id="stacked"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>All entries <span class="sub" id="entriesSub"></span></h2>
+      <div id="entriesWrap"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ MANAGE CATEGORIES MODAL ============ -->
+<div id="modalBackdrop" class="backdrop hidden">
+  <div class="modal card">
+    <div class="modal-head">
+      <h2>Manage categories</h2>
+      <button class="del" id="modalClose" title="Close">✕</button>
+    </div>
+    <p class="hint" style="margin:0 0 4px;">Edit the emoji, name, and color of each category, manage subcategories, or add new ones.</p>
+    <div id="catEditList"></div>
+    <button id="addCatBtn" class="btn ghost full">+ Add category</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// ---------- Storage keys ----------
+const CAT_KEY = "timetrack.categories.v1";
+const STORE_KEY = "timetrack.entries.v1";
+
+// ---------- Defaults ----------
+const PALETTE = ["#6c8cff","#ffb454","#3ad29f","#ff8fcf","#8b6cff","#4cc3ff","#ff6b6b","#c0c6d8","#f5d76e","#5ad1c9"];
+function defaultCategories() {
+  return [
+    { id: uid(), name: "Work",     emoji: "💼", color: "#ffb454",
+      subs: [ {id:uid(),name:"Deep work"}, {id:uid(),name:"Meetings"}, {id:uid(),name:"Email & admin"} ] },
+    { id: uid(), name: "Learning", emoji: "📚", color: "#6c8cff", subs: [] },
+    { id: uid(), name: "Exercise", emoji: "🏃", color: "#3ad29f", subs: [] },
+    { id: uid(), name: "Leisure",  emoji: "🎮", color: "#ff8fcf", subs: [] },
+  ];
+}
+
+// ---------- State ----------
+let categories = loadCats();
+let entries = load();
+migrateLegacyEntries();
+let selectedCat = categories[0] ? categories[0].id : null;
+let selectedSub = null;
+
+// Map entries from the older version (string category ids) onto current categories by name.
+function migrateLegacyEntries() {
+  const legacy = { learning: "Learning", exercise: "Exercise", work: "Work", leisure: "Leisure", reading: "Learning" };
+  let changed = false;
+  entries.forEach(e => {
+    if (categories.some(c => c.id === e.cat)) return;       // already valid
+    const name = legacy[e.cat];
+    const match = name && categories.find(c => c.name === name);
+    if (match) { e.cat = match.id; e.sub = null; changed = true; }
+  });
+  if (changed) save();
+}
+
+// ---------- Persistence ----------
+function loadCats() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(CAT_KEY));
+    if (Array.isArray(arr) && arr.length) return arr.map(normalizeCat);
+  } catch {}
+  const def = defaultCategories();
+  localStorage.setItem(CAT_KEY, JSON.stringify(def));
+  return def;
+}
+function normalizeCat(c) {
+  return { id: c.id || uid(), name: c.name || "Untitled", emoji: c.emoji || "✨",
+           color: c.color || "#6c8cff", subs: Array.isArray(c.subs) ? c.subs.map(s => ({ id: s.id || uid(), name: s.name })) : [] };
+}
+function saveCats() { localStorage.setItem(CAT_KEY, JSON.stringify(categories)); }
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; } catch { return []; } }
+function save() { localStorage.setItem(STORE_KEY, JSON.stringify(entries)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+// ---------- Lookups ----------
+function catById(id) { return categories.find(c => c.id === id) || { id, name: "Unknown", emoji: "❔", color: "#6b7280", subs: [] }; }
+function subById(cat, subId) { return (cat.subs || []).find(s => s.id === subId) || null; }
+
+// ---------- Helpers ----------
+const $ = sel => document.querySelector(sel);
+function todayStr(d = new Date()) {
+  const tz = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return tz.toISOString().slice(0, 10);
+}
+function fmtDur(mins) {
+  const h = Math.floor(mins / 60), m = Math.round(mins % 60);
+  if (h && m) return `${h}h ${m}m`;
+  if (h) return `${h}h`;
+  return `${m}m`;
+}
+function fmtHours(mins) {
+  const h = mins / 60;
+  return (h >= 10 ? Math.round(h) : Math.round(h * 10) / 10) + "h";
+}
+function prettyDate(s) { return new Date(s + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" }); }
+function escapeHTML(s) { return (s || "").replace(/[&<>"]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m])); }
+function shade(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const t = pct < 0 ? 0 : 255, p = Math.abs(pct);
+  r = Math.round((t - r) * p + r); g = Math.round((t - g) * p + g); b = Math.round((t - b) * p + b);
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+// ---------- Category picker (form) ----------
+function renderCats() {
+  if (!categories.find(c => c.id === selectedCat)) selectedCat = categories[0] ? categories[0].id : null;
+  const grid = $("#catGrid");
+  grid.innerHTML = "";
+  categories.forEach(c => {
+    const el = document.createElement("div");
+    el.className = "cat" + (c.id === selectedCat ? " selected" : "");
+    el.style.setProperty("--c", c.color);
+    el.innerHTML = `<div class="emoji">${c.emoji}</div><div class="name">${escapeHTML(c.name)}</div>`;
+    el.onclick = () => { selectedCat = c.id; selectedSub = null; renderCats(); renderSubRow(); updateTimerCat(); };
+    grid.appendChild(el);
+  });
+  const add = document.createElement("div");
+  add.className = "cat add";
+  add.innerHTML = `<div class="emoji">＋</div><div class="name">Manage</div>`;
+  add.onclick = openModal;
+  grid.appendChild(add);
+  renderSubRow();
+}
+
+function renderSubRow() {
+  const row = $("#subRow");
+  const cat = catById(selectedCat);
+  const subs = cat.subs || [];
+  row.innerHTML = "";
+  if (!selectedCat) return;
+
+  const lbl = document.createElement("span");
+  lbl.className = "lbl";
+  lbl.textContent = "Subcategory:";
+  row.appendChild(lbl);
+
+  const none = document.createElement("button");
+  none.className = "chip" + (selectedSub === null ? " selected" : "");
+  none.textContent = "None";
+  none.onclick = () => { selectedSub = null; renderSubRow(); updateTimerCat(); };
+  row.appendChild(none);
+
+  subs.forEach(s => {
+    const chip = document.createElement("button");
+    chip.className = "chip" + (selectedSub === s.id ? " selected" : "");
+    chip.textContent = s.name;
+    chip.onclick = () => { selectedSub = s.id; renderSubRow(); updateTimerCat(); };
+    row.appendChild(chip);
+  });
+
+  // inline add
+  const addWrap = document.createElement("span");
+  addWrap.className = "chip-input";
+  const inp = document.createElement("input");
+  inp.placeholder = "+ Add subcategory";
+  inp.maxLength = 40;
+  const commit = () => {
+    const name = inp.value.trim();
+    if (!name) return;
+    const s = { id: uid(), name };
+    cat.subs = cat.subs || [];
+    cat.subs.push(s);
+    saveCats();
+    selectedSub = s.id;
+    renderSubRow(); updateTimerCat();
+  };
+  inp.onkeydown = e => { if (e.key === "Enter") commit(); };
+  inp.onblur = commit;
+  addWrap.appendChild(inp);
+  row.appendChild(addWrap);
+}
+
+// ---------- Add entry ----------
+function addEntry(catId, subId, minutes, dateStr, note) {
+  entries.push({ id: uid(), cat: catId, sub: subId || null, minutes, date: dateStr, note: note || "", created: Date.now() });
+  save();
+  renderAll();
+}
+
+$("#addBtn").onclick = () => {
+  if (!selectedCat) { flash($("#addBtn"), "Add a category first"); return; }
+  const h = parseInt($("#inHours").value || "0", 10);
+  const m = parseInt($("#inMins").value || "0", 10);
+  const total = (isNaN(h) ? 0 : h) * 60 + (isNaN(m) ? 0 : m);
+  const date = $("#inDate").value || todayStr();
+  if (total <= 0) { flash($("#addBtn"), "Enter a duration"); return; }
+  addEntry(selectedCat, selectedSub, total, date, $("#inNote").value.trim());
+  $("#inHours").value = ""; $("#inMins").value = ""; $("#inNote").value = "";
+  flash($("#addBtn"), "Added ✓");
+};
+function flash(btn, msg) {
+  const old = btn.textContent;
+  btn.textContent = msg; btn.disabled = true;
+  setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 900);
+}
+
+// ---------- Live timer ----------
+let tStart = null, tInterval = null;
+function updateTimerCat() {
+  const c = catById(selectedCat);
+  const s = selectedSub ? subById(c, selectedSub) : null;
+  const label = !selectedCat ? "No category selected"
+    : `${tStart ? "Tracking" : "Will track"}: ${c.emoji} ${c.name}${s ? " · " + s.name : ""}`;
+  $("#timerCat").textContent = label;
+}
+function tickTimer() {
+  const e = Math.floor((Date.now() - tStart) / 1000);
+  const h = String(Math.floor(e / 3600)).padStart(2, "0");
+  const m = String(Math.floor((e % 3600) / 60)).padStart(2, "0");
+  const s = String(e % 60).padStart(2, "0");
+  $("#timerDisplay").textContent = `${h}:${m}:${s}`;
+}
+$("#timerStart").onclick = () => {
+  if (!selectedCat) { flash($("#timerStart"), "Pick a category"); return; }
+  tStart = Date.now();
+  tInterval = setInterval(tickTimer, 1000);
+  tickTimer(); updateTimerCat();
+  $("#timerStart").classList.add("hidden");
+  $("#timerStop").classList.remove("hidden");
+};
+$("#timerStop").onclick = () => {
+  const mins = Math.max(1, Math.round((Date.now() - tStart) / 60000));
+  clearInterval(tInterval); tStart = null; tInterval = null;
+  $("#timerDisplay").textContent = "00:00:00";
+  $("#timerStart").classList.remove("hidden");
+  $("#timerStop").classList.add("hidden");
+  addEntry(selectedCat, selectedSub, mins, todayStr(), "Logged via timer");
+  updateTimerCat();
+};
+
+// ---------- Recent entries ----------
+function renderRecent() {
+  const wrap = $("#recentWrap");
+  const recent = [...entries].sort((a, b) => b.created - a.created).slice(0, 6);
+  if (!recent.length) { wrap.innerHTML = `<div class="empty">No entries yet. Add your first above! 👆</div>`; return; }
+  wrap.innerHTML = `<table><tbody>${recent.map(rowHTML).join("")}</tbody></table>`;
+  bindDeletes(wrap);
+}
+function activityCell(e) {
+  const c = catById(e.cat);
+  const s = e.sub ? subById(c, e.sub) : null;
+  return `<span class="pill"><span class="dot" style="background:${c.color}"></span>${c.emoji} ${escapeHTML(c.name)}${s ? `<span class="subtag">› ${escapeHTML(s.name)}</span>` : ""}</span>`;
+}
+function rowHTML(e) {
+  return `<tr>
+    <td>${activityCell(e)}</td>
+    <td>${fmtDur(e.minutes)}</td>
+    <td style="color:var(--muted)">${prettyDate(e.date)}</td>
+    <td style="text-align:right"><button class="del" data-id="${e.id}" title="Delete">✕</button></td>
+  </tr>`;
+}
+function bindDeletes(scope) {
+  scope.querySelectorAll(".del").forEach(b => b.onclick = () => {
+    entries = entries.filter(e => e.id !== b.dataset.id);
+    save(); renderAll();
+  });
+}
+
+// ---------- Manage categories modal ----------
+function openModal() { renderCatEditor(); $("#modalBackdrop").classList.remove("hidden"); }
+function closeModal() { $("#modalBackdrop").classList.add("hidden"); renderCats(); updateTimerCat(); renderAll(); }
+$("#manageBtn").onclick = openModal;
+$("#modalClose").onclick = closeModal;
+$("#modalBackdrop").onclick = e => { if (e.target === $("#modalBackdrop")) closeModal(); };
+
+function renderCatEditor() {
+  const list = $("#catEditList");
+  list.innerHTML = "";
+  categories.forEach(cat => {
+    const block = document.createElement("div");
+    block.className = "cat-edit";
+    block.innerHTML = `
+      <div class="cat-edit-head">
+        <input class="emoji-in" maxlength="3" value="${escapeHTML(cat.emoji)}" />
+        <input class="name-in" maxlength="40" value="${escapeHTML(cat.name)}" />
+        <input class="color-in" type="color" value="${cat.color}" />
+        <button class="del removeCat" title="Delete category">🗑</button>
+      </div>
+      <div class="subs-edit"><span class="lbl">Subcategories</span></div>`;
+    const subsEl = block.querySelector(".subs-edit");
+
+    (cat.subs || []).forEach(s => {
+      const chip = document.createElement("span");
+      chip.className = "sub-chip";
+      chip.innerHTML = `${escapeHTML(s.name)} <button title="Remove">✕</button>`;
+      chip.querySelector("button").onclick = () => {
+        cat.subs = cat.subs.filter(x => x.id !== s.id);
+        saveCats(); renderCatEditor();
+      };
+      subsEl.appendChild(chip);
+    });
+
+    const addWrap = document.createElement("span");
+    addWrap.className = "chip-input";
+    const subInp = document.createElement("input");
+    subInp.placeholder = "+ Add subcategory";
+    subInp.maxLength = 40;
+    const addSub = () => {
+      const name = subInp.value.trim();
+      if (!name) return;
+      cat.subs = cat.subs || [];
+      cat.subs.push({ id: uid(), name });
+      saveCats(); renderCatEditor();
+    };
+    subInp.onkeydown = e => { if (e.key === "Enter") addSub(); };
+    addWrap.appendChild(subInp);
+    subsEl.appendChild(addWrap);
+
+    // field handlers
+    block.querySelector(".emoji-in").oninput = e => { cat.emoji = e.target.value || "✨"; saveCats(); };
+    block.querySelector(".name-in").oninput = e => { cat.name = e.target.value; saveCats(); };
+    block.querySelector(".color-in").oninput = e => { cat.color = e.target.value; saveCats(); };
+    block.querySelector(".removeCat").onclick = () => {
+      const used = entries.some(en => en.cat === cat.id);
+      if (categories.length <= 1) { alert("Keep at least one category."); return; }
+      if (used && !confirm(`Delete "${cat.name}"? Existing entries using it will show as "Unknown".`)) return;
+      categories = categories.filter(c => c.id !== cat.id);
+      if (selectedCat === cat.id) { selectedCat = categories[0].id; selectedSub = null; }
+      saveCats(); renderCatEditor();
+    };
+
+    list.appendChild(block);
+  });
+}
+$("#addCatBtn").onclick = () => {
+  const color = PALETTE[categories.length % PALETTE.length];
+  categories.push({ id: uid(), name: "New category", emoji: "✨", color, subs: [] });
+  saveCats(); renderCatEditor();
+};
+
+// ---------- Dashboard ----------
+let currentRange = "today";
+let groupMode = "cat";
+let doughnutChart = null, stackedChart = null;
+
+function rangeStart(range) {
+  const d = new Date(); d.setHours(0, 0, 0, 0);
+  if (range === "today") return d;
+  if (range === "week") { d.setDate(d.getDate() - 6); return d; }
+  if (range === "month") { d.setDate(d.getDate() - 29); return d; }
+  return new Date(0);
+}
+function inRange(e, range) {
+  return new Date(e.date + "T00:00:00") >= rangeStart(range);
+}
+
+function renderDashboard() {
+  const data = entries.filter(e => inRange(e, currentRange));
+  const totalMins = data.reduce((s, e) => s + e.minutes, 0);
+  const activeDays = new Set(data.map(e => e.date)).size || 1;
+
+  $("#sTotal").textContent = totalMins ? fmtHours(totalMins) : "0h";
+  $("#sTotalD").textContent = `${fmtDur(totalMins)} total`;
+  $("#sAvg").textContent = fmtHours(totalMins / activeDays);
+  $("#sCount").textContent = data.length;
+
+  const byCat = {};
+  data.forEach(e => byCat[e.cat] = (byCat[e.cat] || 0) + e.minutes);
+  const top = Object.entries(byCat).sort((a, b) => b[1] - a[1])[0];
+  if (top) { const c = catById(top[0]); $("#sTop").textContent = c.emoji + " " + c.name; $("#sTopD").textContent = fmtDur(top[1]); }
+  else { $("#sTop").textContent = "—"; $("#sTopD").textContent = ""; }
+
+  renderDoughnut(data);
+  renderStacked(data);
+  renderEntries(data);
+}
+
+function buildGroups(data) {
+  // returns [{label, color, mins}]
+  const map = new Map();
+  if (groupMode === "sub") {
+    data.forEach(e => {
+      const c = catById(e.cat);
+      const subIdx = (c.subs || []).findIndex(s => s.id === e.sub);
+      const s = e.sub ? subById(c, e.sub) : null;
+      const key = e.cat + "::" + (e.sub || "_none");
+      const label = `${c.name} · ${s ? s.name : "general"}`;
+      const color = s ? shade(c.color, (subIdx % 2 === 0 ? 0.18 : -0.18) * (Math.floor(subIdx / 2) + 1)) : shade(c.color, 0.35);
+      if (!map.has(key)) map.set(key, { label, color, mins: 0 });
+      map.get(key).mins += e.minutes;
+    });
+  } else {
+    data.forEach(e => {
+      const c = catById(e.cat);
+      if (!map.has(e.cat)) map.set(e.cat, { label: c.name, color: c.color, mins: 0 });
+      map.get(e.cat).mins += e.minutes;
+    });
+  }
+  return [...map.values()].sort((a, b) => b.mins - a.mins);
+}
+
+function renderDoughnut(data) {
+  const groups = buildGroups(data);
+  const ctx = $("#doughnut");
+  if (doughnutChart) doughnutChart.destroy();
+  if (!groups.length) {
+    $("#doughnutLegend").innerHTML = `<div class="empty" style="width:100%">No data in this range.</div>`;
+    doughnutChart = new Chart(ctx, { type: "doughnut", data: { labels: ["No data"], datasets: [{ data: [1], backgroundColor: ["#2b3145"], borderWidth: 0 }] }, options: doughnutOpts() });
+    return;
+  }
+  const values = groups.map(g => Math.round(g.mins / 60 * 10) / 10);
+  doughnutChart = new Chart(ctx, {
+    type: "doughnut",
+    data: { labels: groups.map(g => g.label), datasets: [{ data: values, backgroundColor: groups.map(g => g.color), borderColor: "#161922", borderWidth: 3, hoverOffset: 6 }] },
+    options: doughnutOpts()
+  });
+  $("#doughnutLegend").innerHTML = groups.map((g, i) =>
+    `<span class="item"><span class="dot" style="background:${g.color}"></span>${escapeHTML(g.label)} · ${values[i]}h</span>`).join("");
+}
+function doughnutOpts() {
+  return { responsive: true, maintainAspectRatio: false, cutout: "62%",
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.label}: ${c.parsed}h` } } } };
+}
+
+function renderStacked(data) {
+  let days;
+  if (currentRange === "today") days = [todayStr()];
+  else {
+    const n = currentRange === "week" ? 7 : currentRange === "month" ? 30 : null;
+    if (n) { days = []; const d = new Date(); d.setHours(0,0,0,0); for (let i = n - 1; i >= 0; i--) { const x = new Date(d); x.setDate(d.getDate() - i); days.push(todayStr(x)); } }
+    else { days = [...new Set(data.map(e => e.date))].sort(); if (!days.length) days = [todayStr()]; }
+  }
+  const used = categories.filter(c => data.some(e => e.cat === c.id));
+  const datasets = (used.length ? used : [categories[0]]).map(c => ({
+    label: c.name, backgroundColor: c.color,
+    data: days.map(day => Math.round(data.filter(e => e.date === day && e.cat === c.id).reduce((s, e) => s + e.minutes, 0) / 60 * 100) / 100),
+    borderRadius: 4, borderSkipped: false,
+  }));
+  const ctx = $("#stacked");
+  if (stackedChart) stackedChart.destroy();
+  stackedChart = new Chart(ctx, {
+    type: "bar",
+    data: { labels: days.map(prettyDate), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y}h` } } },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { color: "#9aa3b8", maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
+        y: { stacked: true, grid: { color: "#2b3145" }, ticks: { color: "#9aa3b8", callback: v => v + "h" }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+function renderEntries(data) {
+  const wrap = $("#entriesWrap");
+  $("#entriesSub").textContent = `(${data.length})`;
+  const sorted = [...data].sort((a, b) => (b.date.localeCompare(a.date)) || (b.created - a.created));
+  if (!sorted.length) { wrap.innerHTML = `<div class="empty">No entries in this range.</div>`; return; }
+  wrap.innerHTML = `<table>
+    <thead><tr><th>Activity</th><th>Duration</th><th>Date</th><th>Note</th><th></th></tr></thead>
+    <tbody>${sorted.map(e => `<tr>
+        <td>${activityCell(e)}</td>
+        <td>${fmtDur(e.minutes)}</td>
+        <td style="color:var(--muted)">${prettyDate(e.date)}</td>
+        <td style="color:var(--muted)">${escapeHTML(e.note)}</td>
+        <td style="text-align:right"><button class="del" data-id="${e.id}" title="Delete">✕</button></td>
+      </tr>`).join("")}</tbody></table>`;
+  bindDeletes(wrap);
+}
+
+// ---------- Dashboard controls ----------
+$("#rangeTabs").querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  $("#rangeTabs").querySelector(".active").classList.remove("active");
+  t.classList.add("active"); currentRange = t.dataset.range; renderDashboard();
+});
+$("#groupSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
+  $("#groupSeg").querySelector(".active").classList.remove("active");
+  b.classList.add("active"); groupMode = b.dataset.group; renderDashboard();
+});
+
+// ---------- Export / Import ----------
+$("#exportBtn").onclick = () => {
+  const payload = { categories, entries };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `timetrack-${todayStr()}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+};
+$("#importBtn").onclick = () => $("#importFile").click();
+$("#importFile").onchange = ev => {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      const arr = Array.isArray(data) ? data : data.entries;          // support old (array) & new ({categories,entries})
+      if (data.categories && Array.isArray(data.categories) && data.categories.length) {
+        categories = data.categories.map(normalizeCat); saveCats();
+      }
+      if (!Array.isArray(arr)) throw new Error("bad");
+      entries = arr.filter(e => e && e.cat && e.minutes && e.date)
+        .map(e => ({ id: e.id || uid(), cat: e.cat, sub: e.sub || null, minutes: +e.minutes, date: e.date, note: e.note || "", created: e.created || Date.now() }));
+      save(); selectedCat = categories[0] ? categories[0].id : null; selectedSub = null;
+      renderCats(); renderAll();
+    } catch { alert("Could not import that file."); }
+  };
+  reader.readAsText(file);
+  ev.target.value = "";
+};
+
+// ---------- View switching ----------
+document.querySelectorAll("nav.tabs .tab").forEach(t => t.onclick = () => {
+  document.querySelector("nav.tabs .active").classList.remove("active");
+  t.classList.add("active");
+  const view = t.dataset.view;
+  $("#view-track").classList.toggle("hidden", view !== "track");
+  $("#view-dashboard").classList.toggle("hidden", view !== "dashboard");
+  if (view === "dashboard") renderDashboard();
+});
+
+// ---------- Render all ----------
+function renderAll() {
+  renderRecent();
+  if (!$("#view-dashboard").classList.contains("hidden")) renderDashboard();
+}
+
+// ---------- Seed sample data on first run ----------
+function seedIfEmpty() {
+  if (entries.length) return;
+  const work = categories[0], learning = categories[1], exercise = categories[2], leisure = categories[3];
+  const day = i => { const x = new Date(); x.setDate(x.getDate() - i); return todayStr(x); };
+  const sub = (cat, i) => (cat.subs && cat.subs[i]) ? cat.subs[i].id : null;
+  entries = [
+    { id: uid(), cat: work.id,     sub: sub(work,0), minutes: 180, date: day(0), note: "Feature build", created: Date.now()-1 },
+    { id: uid(), cat: work.id,     sub: sub(work,1), minutes: 60,  date: day(0), note: "Standup + sync", created: Date.now()-2 },
+    { id: uid(), cat: learning.id, sub: null,        minutes: 90,  date: day(0), note: "JS course", created: Date.now()-3 },
+    { id: uid(), cat: exercise.id, sub: null,        minutes: 45,  date: day(0), note: "Morning run", created: Date.now()-4 },
+    { id: uid(), cat: work.id,     sub: sub(work,0), minutes: 210, date: day(1), note: "", created: Date.now()-5 },
+    { id: uid(), cat: leisure.id,  sub: null,        minutes: 75,  date: day(1), note: "", created: Date.now()-6 },
+    { id: uid(), cat: learning.id, sub: null,        minutes: 60,  date: day(2), note: "", created: Date.now()-7 },
+    { id: uid(), cat: exercise.id, sub: null,        minutes: 50,  date: day(2), note: "Gym", created: Date.now()-8 },
+    { id: uid(), cat: work.id,     sub: sub(work,2), minutes: 40,  date: day(3), note: "Inbox", created: Date.now()-9 },
+  ];
+  save();
+}
+
+// ---------- Init ----------
+$("#inDate").value = todayStr();
+seedIfEmpty();
+renderCats();
+updateTimerCat();
+renderAll();
+</script>
+</body>
+</html>
