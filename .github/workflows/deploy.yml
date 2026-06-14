@@ -1,0 +1,80 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAGES: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build fairy-tale-kingdom-builder (Vite)
+        working-directory: fairy-tale-kingdom-builder
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build instrument-mountain (Next.js static export)
+        working-directory: instrument-mountain
+        run: |
+          npm ci
+          npm run build
+
+      - name: Assemble site
+        run: |
+          rm -rf _site
+          mkdir -p _site
+
+          # Root portfolio page
+          cp index.html _site/index.html
+
+          # Static time-tracker
+          mkdir -p _site/time-tracker
+          cp -r time-tracker/* _site/time-tracker/
+
+          # Vite app build output
+          mkdir -p _site/fairy-tale-kingdom-builder
+          cp -r fairy-tale-kingdom-builder/dist/* _site/fairy-tale-kingdom-builder/
+
+          # Next.js static export output
+          mkdir -p _site/instrument-mountain
+          cp -r instrument-mountain/out/* _site/instrument-mountain/
+
+          # Disable Jekyll so _next and underscore dirs are served
+          touch _site/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
