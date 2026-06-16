@@ -28,6 +28,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Build fairy-tale-kingdom-builder (Vite)
+        working-directory: fairy-tale-kingdom-builder
+        run: |
+          npm ci
+          npm run build
+
       - name: Build instrument-mountain (Next.js static export)
         working-directory: instrument-mountain
         run: |
@@ -57,6 +63,10 @@ jobs:
           # Static time-tracker
           mkdir -p _site/time-tracker
           cp -r time-tracker/* _site/time-tracker/
+
+          # Vite app build output
+          mkdir -p _site/fairy-tale-kingdom-builder
+          cp -r fairy-tale-kingdom-builder/dist/* _site/fairy-tale-kingdom-builder/
 
           # Next.js static export output
           mkdir -p _site/instrument-mountain
