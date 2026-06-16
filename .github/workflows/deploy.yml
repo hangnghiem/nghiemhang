@@ -34,12 +34,6 @@ jobs:
           npm ci
           npm run build
 
-      - name: Build instrument-mountain (Next.js static export)
-        working-directory: instrument-mountain
-        run: |
-          npm ci
-          npm run build
-
       - name: Build ai-daily-news (Vite)
         working-directory: ai-daily-news
         run: |
@@ -67,10 +61,6 @@ jobs:
           # Vite app build output
           mkdir -p _site/fairy-tale-kingdom-builder
           cp -r fairy-tale-kingdom-builder/dist/* _site/fairy-tale-kingdom-builder/
-
-          # Next.js static export output
-          mkdir -p _site/instrument-mountain
-          cp -r instrument-mountain/out/* _site/instrument-mountain/
 
           # Vite app build output
           mkdir -p _site/ai-daily-news
