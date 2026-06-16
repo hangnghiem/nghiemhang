@@ -293,6 +293,51 @@
       color: var(--muted);
     }
 
+    /* projects */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 720px) { .proj-grid { grid-template-columns: 1fr; } }
+    .proj-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .proj-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+      box-shadow: var(--shadow);
+    }
+    .proj-emoji {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: grid; place-items: center;
+      font-size: 1.5rem;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      margin-bottom: 16px;
+    }
+    .proj-card h3 { margin: 0 0 8px; font-size: 1.1rem; }
+    .proj-card p { margin: 0 0 16px; color: var(--muted); font-size: 0.92rem; flex: 1; }
+    .proj-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .proj-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .proj-card:hover .proj-link { gap: 10px; }
+
     /* languages */
     .langs { display: grid; gap: 18px; max-width: 520px; }
     .lang-row { display: grid; grid-template-columns: 130px 1fr 110px; align-items: center; gap: 14px; }
@@ -414,6 +459,7 @@
       <nav class="nav-links">
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
         <a href="#experience">Experience</a>
         <a href="#education">Education</a>
         <a href="#contact">Contact</a>
@@ -536,6 +582,81 @@
           <div class="bar"><span style="width:55%"></span></div>
           <span class="level-text">Intermediate</span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Built with AI</span>
+        <h2>Projects</h2>
+      </div>
+      <div class="proj-grid">
+        <a class="proj-card reveal" href="./ai-daily-news/">
+          <div class="proj-emoji">📰</div>
+          <h3>AI Daily News</h3>
+          <p>An Engoo-style web app that turns the latest AI headlines into leveled English lessons — articles with audio, comprehension quizzes, vocabulary, and discussion prompts.</p>
+          <div class="proj-tags">
+            <span class="tag">React</span>
+            <span class="tag">Vite</span>
+            <span class="tag">Tailwind</span>
+            <span class="tag">Web Speech API</span>
+          </div>
+          <span class="proj-link">View project →</span>
+        </a>
+
+        <a class="proj-card reveal" href="./chatgpt-clone/">
+          <div class="proj-emoji">💬</div>
+          <h3>LocalGPT — ChatGPT Clone</h3>
+          <p>A polished ChatGPT-style chat app with streaming responses that runs entirely on your machine via Ollama, or any OpenAI-compatible API. Conversations stay in your browser.</p>
+          <div class="proj-tags">
+            <span class="tag">React</span>
+            <span class="tag">Vite</span>
+            <span class="tag">Tailwind</span>
+            <span class="tag">Ollama / OpenAI API</span>
+          </div>
+          <span class="proj-link">View project →</span>
+        </a>
+
+        <a class="proj-card reveal" href="./instrument-mountain/">
+          <div class="proj-emoji">🏔️</div>
+          <h3>Instrument Mountain · 楽器の山</h3>
+          <p>A browser game mixing instrument quizzes with a settlement-building simulation — climb the mountain, answer 100 quizzes, gather resources and musicians, and build villages up to the Orchestra City.</p>
+          <div class="proj-tags">
+            <span class="tag">Next.js</span>
+            <span class="tag">React</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Tailwind</span>
+          </div>
+          <span class="proj-link">View project →</span>
+        </a>
+
+        <a class="proj-card reveal" href="./fairy-tale-kingdom-builder/">
+          <div class="proj-emoji">🪄</div>
+          <h3>Fairy Tale Kingdom Builder</h3>
+          <p>A gamified English-learning app for kids, themed around a Prince &amp; Princess fairy tale. A daily Listening → Speaking → Reading → Writing loop powers a build-your-own kingdom reward system.</p>
+          <div class="proj-tags">
+            <span class="tag">React</span>
+            <span class="tag">Vite</span>
+            <span class="tag">Zustand</span>
+            <span class="tag">Framer Motion</span>
+          </div>
+          <span class="proj-link">View project →</span>
+        </a>
+
+        <a class="proj-card reveal" href="./time-tracker/">
+          <div class="proj-emoji">⏱️</div>
+          <h3>TimeTrack — Activity Tracker</h3>
+          <p>A lightweight web app to log daily activities and visualize habits on a dashboard with summary cards, doughnut and stacked-bar charts, a live timer, and JSON export / import.</p>
+          <div class="proj-tags">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Chart.js</span>
+            <span class="tag">localStorage</span>
+          </div>
+          <span class="proj-link">View project →</span>
+        </a>
       </div>
     </div>
   </section>
