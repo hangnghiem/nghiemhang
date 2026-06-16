@@ -1,0 +1,293 @@
+%%%%
+% MTecknology's Resume
+%%%%
+% Author: Michael Lustfield
+% License: CC-BY-4
+% - https://creativecommons.org/licenses/by/4.0/legalcode.txt
+%%%%
+
+\documentclass[letterpaper,10pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%
+%% BEGIN_FILE: mteck.sty
+%% NOTE: Everything between here and END_FILE can
+%% be relocated to "mteck.sty" and then included with:
+%\usepackage{mteck}
+
+% Dependencies
+% NOTE: Some packages (lastpage, hyperref) require second build!
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{hyperref}
+% Sans-Serif
+%\usepackage[sfdefault]{FiraSans}
+%\usepackage[sfdefault]{roboto}
+%\usepackage[sfdefault]{noto-sans}
+%\usepackage[default]{sourcesanspro}
+
+% Serif
+\usepackage{CormorantGaramond}
+\usepackage{charter}
+
+% Colors
+% Use with \color{Name}
+% Can wrap entire heading with {\color{accent} [...] }
+\usepackage{xcolor}
+\definecolor{accentTitle}{HTML}{0e6e55}
+\definecolor{accentText}{HTML}{0e6e55}
+\definecolor{accentLine}{HTML}{a16f0b}
+
+% Misc. Options
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\urlstyle{same}
+
+% Adjust Margins
+\addtolength{\oddsidemargin}{-0.7in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-0.7in}
+\addtolength{\textheight}{1.4in}
+
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
+\setlength{\tabcolsep}{0pt}
+\setlength{\footskip}{3.7pt}
+\raggedbottom
+\raggedright
+
+% ATS Readability
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+%-----------------%
+% Custom Commands %
+%-----------------%
+
+% Centered title along with subtitle between HR
+% Usage: \documentTitle{Name}{Details}
+\newcommand{\documentTitle}[2]{
+  \begin{center}
+    {\Huge\scshape\color{accentTitle} #1}
+    \vspace{10pt}
+    {\color{accentLine} \hrule}
+    \vspace{2pt}
+    %{\footnotesize\color{accentTitle} #2}
+    \footnotesize{#2}
+    \vspace{2pt}
+    {\color{accentLine} \hrule}
+  \end{center}
+}
+
+% Create a footer with correct padding
+% Usage: \documentFooter{\thepage of X}
+\newcommand{\documentFooter}[1]{
+  \setlength{\footskip}{10.25pt}
+  \fancyfoot[C]{\footnotesize #1}
+}
+
+% Simple wrapper to set up page numbering
+% Usage: \numberedPages
+% WARNING: Must run pdflatex twice!
+\newcommand{\numberedPages}{
+  \documentFooter{\thepage/\pageref{LastPage}}
+}
+
+% Section heading with horizontal rule
+% Usage: \section{Title}
+\titleformat{\section}{
+  \vspace{-5pt}
+  \color{accentText}
+  \scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{accentLine}\titlerule]
+
+% Section heading with separator and content on same line
+% Usage: \tinysection{Title}
+\newcommand{\tinysection}[1]{
+  \phantomsection
+  \addcontentsline{toc}{section}{#1}
+  {\scshape\large{\bfseries\color{accentText}#1} {\color{accentLine} |}}
+}
+
+% Indented line with arguments left/right aligned in document
+% Usage: \heading{Left}{Right}
+\newcommand{\heading}[2]{
+  \hspace{10pt}#1\hfill#2\\
+}
+
+% Adds \textbf to \heading
+\newcommand{\headingBf}[2]{
+  \heading{\textbf{#1}}{\textbf{#2}}
+}
+
+% Adds \textit to \heading
+\newcommand{\headingIt}[2]{
+  \heading{\textit{#1}}{\textit{#2}}
+}
+
+% Template for itemized lists
+% Usage: \begin{resume_list} [items] \end{resume_list}
+\newenvironment{resume_list}{
+  \vspace{-7pt}
+  \begin{itemize}[itemsep=-2px, parsep=1pt, leftmargin=30pt]
+}{
+  \end{itemize}
+  %\vspace{-2pt}
+}
+
+% Formats an item to use as an itemized title
+% Usage: \itemTitle{Title}
+\newcommand{\itemTitle}[1]{
+  \item[] \underline{#1}\vspace{4pt}
+}
+
+% Bullets used in itemized lists
+\renewcommand\labelitemi{--}
+
+%% END_FILE: mteck.sty
+%%%%%%%%%%%%%%%%%%%%%%
+
+
+%===================%
+% John Doe's Resume %
+%===================%
+
+%\numberedPages % NOTE: lastpage requires a second build
+%\documentFooter{\thepage of 2} % Does similar without using lastpage
+\begin{document}
+
+  %---------%
+  % Heading %
+  %---------%
+
+  \documentTitle{Nghiem Thi Hang}{
+    % Web Version
+    %\raisebox{-0.05\height} \faPhone\ [redacted - web copy] ~
+    %\raisebox{-0.15\height} \faEnvelope\ [redacted - web copy] ~
+    %%
+    Saitama, Japan \\
+    \href{tel:07085191501}{
+      \raisebox{-0.05\height} \faPhone\ 070-8519-1501} ~
+    \href{mailto:nghiemthihang89@gmail.com}{
+      \raisebox{-0.15\height} \faEnvelope\ nghiemthihang89@gmail.com} ~
+    \href{https://hangnghiem.github.io/nghiemhang/}{
+      \raisebox{-0.15\height} \faGlobe\ Portfolio} ~
+    \href{https://github.com/hangnghiem}{
+      \raisebox{-0.15\height} \faGithub\ hangnghiem} ~
+    \href{https://www.linkedin.com/in/hang-nghiem-045871a4/}{
+      \raisebox{-0.15\height} \faLinkedin\ hang-nghiem}
+  }
+
+  %---------%
+  % Summary %
+  %---------%
+
+  \tinysection{Summary}
+  AI-focused professional with 7 years in Natural Language Processing (NLP) and Generative AI, transitioning into AI/LLM engineering. Deep hands-on experience in prompt engineering, model evaluation (SxS), and curating golden datasets for supervised fine-tuning (SFT). Now building software, having shipped multiple full-stack web applications (React, JavaScript) and developing Python proficiency. Combines rare linguistic and AI-domain expertise with a growing engineering toolkit to build and improve LLM-powered products.
+
+  %--------%
+  % Skills %
+  %--------%
+
+  \section{Skills}
+    \begin{resume_list}
+      \item \textbf{Programming \& Tools:} Python (learning), JavaScript, React, HTML/CSS, Git \& GitHub, REST APIs, Vite, Tailwind CSS.
+      \item \textbf{AI / LLM Engineering:} Prompt Engineering, LLM Evaluation, Side-by-Side (SxS) Evaluation, Supervised Fine-Tuning (SFT) Data, Golden Dataset Curation, Model Output QA.
+      \item \textbf{Analytical:} Error Analysis, Factuality Checking, Edge-Case Identification, Auditing, Data-Quality Standards.
+      \item \textbf{Linguistic:} Semantic \& Pragmatic Analysis, Annotation, Localization, Cultural Relevance.
+      \item \textbf{Languages:} Vietnamese (native), English (business), Japanese (intermediate).
+    \end{resume_list}
+
+  %----------%
+  % Projects %
+  %----------%
+
+  \section{Projects}
+  \vspace{3pt}
+  {\footnotesize\textit{Selected AI-assisted builds --- live demos and source on \href{https://hangnghiem.github.io/nghiemhang/}{portfolio} and \href{https://github.com/hangnghiem}{GitHub}.}}\\
+  \vspace{-3pt}
+  \begin{resume_list}
+    \item \textbf{AI Daily News} \,--\, \textit{React, Vite, Tailwind, Web Speech API.} \\
+          Web app that turns the latest AI headlines into leveled English lessons with audio, comprehension quizzes, vocabulary, and discussion prompts.
+    \item \textbf{LocalGPT (ChatGPT Clone)} \,--\, \textit{React, Vite, Tailwind, Ollama / OpenAI API.} \\
+          Chat app with streaming responses that runs locally via Ollama or any OpenAI-compatible API; conversations stay in the browser.
+    \item \textbf{Fairy Tale Kingdom Builder} \,--\, \textit{React, Vite, Zustand, Framer Motion.} \\
+          Gamified English-learning app for kids with a daily Listening--Speaking--Reading--Writing loop powering a build-your-own-kingdom reward system.
+    \item \textbf{TimeTrack (Activity Tracker)} \,--\, \textit{JavaScript, Chart.js, localStorage.} \\
+          Activity logger that visualizes habits on a dashboard with summary cards, charts, a live timer, and JSON export/import.
+  \end{resume_list}
+
+  %------------%
+  % Experience %
+  %------------%
+
+  \section{Recent Experience}
+
+  \headingBf{Cognizant Japan}{Jan 2025 -- Present}
+  \headingIt{Vietnamese Language Expert, supporting Google}{}
+  \begin{resume_list}
+  
+  \itemTitle{Project: Generative AI}
+    \item {Curate, audit, and validate high-fidelity ``golden datasets'' used as ground truth for supervised fine-tuning (SFT) and model alignment.}
+    \item {Assess model reasoning, accuracy, and safety to identify capability and performance gaps.}
+    \item {Execute Side-by-Side (SxS) evaluations to benchmark performance across models, versions, and human writers.}
+    \item {Test newly deployed features and synthesize insights to guide engineering and product teams.}
+    
+  \end{resume_list}
+  
+  \headingBf{Aceolution Japan}{Jan 2024 -- Dec 2024}
+  \headingIt{Linguistic Project Manager}{}
+  \begin{resume_list}
+
+  \itemTitle{Project: Generative AI, NLP}
+        \item {Review, and evaluate natural language data.}
+        \item {Localize prompts, and review AI model responses.}
+        \item {Maintain, and improve the quality of NLP systems.}
+        \item {Evaluate, update, and contribute to guideline development.}
+        \item {Manage team work, and monitor team performance.}
+  \end{resume_list}
+
+  \headingBf{Adecco Group, Japan}{Dec 2018 -- Dec 2023}
+  \headingIt{Vietnamese Associate Linguist, supporting Google}{}
+  \begin{resume_list}
+   
+    \itemTitle{Project: NLP}
+    \item {Review, annotate linguistic data, and develop grammar.} 
+        \item {Identify, and address gaps in annotation.}
+        \item {Contribute to Speech and Text-to-Speech improvement, text normalization of named entities, and localization.}
+  \end{resume_list}
+
+  \headingBf{Phuong Dong University, Vietnam}{Aug 2012 -- Jun 2014}
+  \headingIt{English Teacher}{}
+  \begin{resume_list}
+   
+    \item {Plan, design, and organize comprehensive instructional materials and lesson plans.} 
+        \item {Evaluate student progress, and learning outcomes.}
+        \item {Conduct researches on student learning to improve the quality of teaching and learning.}
+  \end{resume_list}
+  %-----------%
+  % Education %
+  %-----------%
+
+  \section{Education}
+ \begin{resume_list}
+ \item {\textbf{MA - English:} }{Vietnam National University, Hanoi, Vietnam, Sep 2012 --  Jun 2014.}\\
+ \item {\textbf{BA - English:} }{Vietnam National University, Hanoi, Vietnam, Sep 2007 --  Jun 2011.}  
+\end{resume_list}
+
+
+  %----------------------------%
+  % Extracurricular Activities %
+  %----------------------------%
+ 
+
+\end{document}
