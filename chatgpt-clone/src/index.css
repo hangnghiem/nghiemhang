@@ -1,0 +1,140 @@
+/* highlight.js theme (GitHub Dark) — must precede @tailwind for valid CSS @import ordering */
+@import "highlight.js/styles/github-dark.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: theme("fontFamily.body");
+  background: theme("colors.surface");
+  color: #ececec;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Thin custom scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4b4b4b transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #4b4b4b;
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #5e5e5e;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Markdown / prose styling for assistant messages */
+.prose-chat {
+  line-height: 1.7;
+  font-size: 1rem;
+  word-break: break-word;
+}
+.prose-chat p {
+  margin: 0 0 1rem;
+}
+.prose-chat p:last-child {
+  margin-bottom: 0;
+}
+.prose-chat h1,
+.prose-chat h2,
+.prose-chat h3,
+.prose-chat h4 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.4rem 0 0.7rem;
+}
+.prose-chat h1 {
+  font-size: 1.5rem;
+}
+.prose-chat h2 {
+  font-size: 1.3rem;
+}
+.prose-chat h3 {
+  font-size: 1.1rem;
+}
+.prose-chat ul,
+.prose-chat ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+.prose-chat ul {
+  list-style: disc;
+}
+.prose-chat ol {
+  list-style: decimal;
+}
+.prose-chat li {
+  margin: 0.3rem 0;
+}
+.prose-chat li > ul,
+.prose-chat li > ol {
+  margin: 0.3rem 0;
+}
+.prose-chat a {
+  color: #7ab7ff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-chat blockquote {
+  border-left: 3px solid #4b4b4b;
+  padding-left: 1rem;
+  margin: 0 0 1rem;
+  color: #b4b4b4;
+}
+.prose-chat hr {
+  border: none;
+  border-top: 1px solid #3a3a3a;
+  margin: 1.5rem 0;
+}
+.prose-chat table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+}
+.prose-chat th,
+.prose-chat td {
+  border: 1px solid #3a3a3a;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.prose-chat th {
+  background: #2f2f2f;
+  font-weight: 600;
+}
+
+/* Inline code */
+.prose-chat :not(pre) > code {
+  background: #2f2f2f;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 0.12rem 0.38rem;
+  font-family: theme("fontFamily.mono");
+  font-size: 0.85em;
+}
+
+/* Code blocks (rendered via CodeBlock component) */
+.prose-chat pre {
+  margin: 0 0 1rem;
+}

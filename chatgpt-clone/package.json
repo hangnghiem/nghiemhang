@@ -1,0 +1,27 @@
+{
+  "name": "chatgpt-clone",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A local ChatGPT clone. Streams chat from a local LLM via Ollama or any OpenAI-compatible API, with multi-conversation history, markdown + code rendering, and a polished dark UI.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.1",
+    "rehype-highlight": "^7.0.0",
+    "remark-gfm": "^4.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "highlight.js": "^11.10.0",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.7",
+    "vite": "^5.3.4"
+  }
+}
